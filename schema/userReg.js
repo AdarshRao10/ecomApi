@@ -25,8 +25,8 @@ function validationError(error){
             emailId:Joi.string().required(),
             password: Joi.string().required()
         },
-        termsAcceptcheck:Joi.Boolean().required()
+        termsAcceptcheck:Joi.boolean().required().invalid(false)
     });
     return schema.validate(error);
 }
-module.exports = {user,validationError};
+module.exports = {user,user_reg,validationError};
