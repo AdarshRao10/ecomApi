@@ -11,7 +11,8 @@ let category = mongoose.model('category',categorySchema);
 function validationError(error){
     let schema = Joi.object({
         categoryName:Joi.string().min(4).max(250).required(),
-        subcategoryId:Joi.string().min(4).max(250).required()
+        //subcategory:Joi.string().min(4).max(250).required()
+        subcategory:Joi.array().items(Joi.string())
     });
     return schema.validate(error);
 }

@@ -34,4 +34,4 @@ function validationError(error){
     });
     return schema.validate(error);
 }
-module.exports = {contact,validationError};
+module.exports = {product,validationError};
