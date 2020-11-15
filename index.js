@@ -24,6 +24,7 @@ let register = require('./routes/user_Regmw');
 let subcat = require('./routes/subCategorymw');
 let category = require('./routes/categoryModelmw');
 let file = require('./routes/productmw');
+let userCart = require('./routes/user_cart');
 //abhi uploads folder use karne ke liye niche ka line use kiya hai
 app.use('/uploads',express.static("uploads"));
 
@@ -31,6 +32,7 @@ app.use('/uploads',express.static("uploads"));
  app.use('/api/',subcat);
  app.use('/api/',category);
  app.use('/api/',file);
+ app.use('/api/',userCart);
 // mongoose.connect('mongodb+srv://Adarsh10:<password>@cluster0.kemhz.mongodb.net/ecommerce?retryWrites=true&w=majority',{useNewUrlParser: true,useUnifiedTopology: true})//ecommerce is db name
 //          .then(() => console.log('db connected'))
 //          .catch(error => console.log(`something went wrong ${error.message}`)); 
