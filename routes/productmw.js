@@ -8,6 +8,8 @@ let subcatmodel = require('../schema/subcategoryModel');
 const { subcategory } = require('../schema/subcategoryModel');
 const { category } = require('../schema/categoryModel');
 const { product } = require('../schema/products');
+const { string } = require('Joi');
+var imageName;
 
 //let bcrypt = require('bcrypt');
 
@@ -113,40 +115,71 @@ let findobj1 = await subcatmodel.subcategory.findById(req.body.subcategory);
 });
 
 
-//updating productItem
-router.put('/update/:id',async(req,res)=>{
-    let findobj = await user_reg.productItem.findById(req.params.id);
+//updating productItem excluding images image updation will be performed later.
+router.put('/updateProduct/:id',async(req,res)=>{
+    let findobj = await prodmodel.product.findById(req.params.id);
     if(!findobj)
     {
       return res.status(404).send({message:'Invalid id'}); 
     }
-     
-  let result = user_reg.validationError(req.body);
-  console.log(result);
-  if(result.error)
-  {
-      return res.status(400).send(result.error.details[0].message)
-  }
-    //findobj.name = req.body.name;
-    findobj.firstname= req.body.firstname,
-    findobj.lastname=req.body.lastname,
-    findobj.userlogin=req.body.userlogin;
-    //encrypt password
-    let salt = await bcrypt.genSalt(10);
-    findobj.userlogin.password = await bcrypt.hash(findobj.userlogin.password,salt);
 
-    await findobj.save();
-    res.send({message:'productItem updated'});
+   console.log(findobj);
+ 
+    var attribute = req.body;
+    var keys = Object.keys(attribute);
+    var values= Object.values(attribute);
+   console.log(keys);
+    
+    for (var i = 0; i < keys.length; i++) {
+     var names = keys[i];
+     var key_data = values[i];
+     findobj[names]=key_data;
+     await findobj.save();
+    }
+    res.send({message:'product updated'});
+    
   })
 
-  //for delete operation
-  router.delete('/delete/:id',async(req,res)=>{
-    let findobj = await user_reg.productItem.findByIdAndRemove(req.params.id);
+  
+  //Deleting product along with its image from folder.
+  router.delete('/deleteProduct/:id',async(req,res)=>{
+    let findobj = await prodmodel.product.findByIdAndRemove(req.params.id);
     if(!findobj)
     {
       return res.status(404).send({message:'Invalid id'}); 
     }
-    res.send({message:'productItem deleted'});
+
+    console.log(findobj); 
+
+    //find image path.
+    // Initialize string 
+    var str = findobj.image; 
+    var seperator = "/";  
+    splitStr(str, seperator);
+
+    function splitStr(str, seperator) { 
+      
+      // Function to split string 
+      var string = str.split(seperator); 
+        
+      console.log(string); 
+      //we now obtained image name from url
+       imageName = string[string.length-1];
+      console.log(imageName);
+  } 
+
+    //before deleting the product we must delete the image from the server
+      const fs = require('fs')
+      const path = './uploads/'+imageName;
+      fs.unlink(path, (err) => {
+      if (err) {
+      console.error(err);
+      return;
+      }
+      //file removed
+      })
+
+    res.send({message:'product deleted'});
 });
 
 
@@ -169,3 +202,4 @@ router.post('/showProducts/:page',async(req,res)=>{
  });
 
 });module.exports = router;
+//5fb4e62c47c45f3060f2d960
